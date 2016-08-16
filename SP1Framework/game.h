@@ -9,13 +9,14 @@ extern bool g_bQuitGame;
 // Enumeration to store the control keys that your game will have
 enum EKEYS
 {
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    K_SPACE,
-    K_COUNT
+	K_UP,
+	K_DOWN,
+	K_LEFT,
+	K_RIGHT,
+	K_ESCAPE,
+	K_SPACE,
+	K_COUNT,
+	K_ENTER
 };
 
 // Enumeration for the different screen states
@@ -24,6 +25,14 @@ enum EGAMESTATES
     S_SPLASHSCREEN,
     S_GAME,
     S_COUNT
+};
+
+enum EMENU
+{
+	K_STARTGAME,
+	K_LEADERBOARD,
+	K_CREDITS,
+	K_QUIT
 };
 
 // struct for the game character
