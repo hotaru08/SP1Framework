@@ -11,6 +11,8 @@
 
 using namespace std;
 
+char maze[77][19]; //for map
+
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
@@ -39,8 +41,8 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 
-    g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.X =  45;
+    g_sChar.m_cLocation.Y = 2;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -160,30 +162,46 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;
-        bSomethingHappened = true;
-    }
+	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.Y--;
+		bSomethingHappened = true;
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '|')
+		{
+			g_sChar.m_cLocation.Y++;
+		}
+	}
+	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.X--;
+		bSomethingHappened = true;
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '|')
+		{
+			g_sChar.m_cLocation.X++;
+		}
+	}
+	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.Y++;
+		bSomethingHappened = true;
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '|')
+		{
+			g_sChar.m_cLocation.Y--;
+		}
+	}
+	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.X++;
+		bSomethingHappened = true;
+		if (maze[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == '|')
+		{
+			g_sChar.m_cLocation.X--;
+		}
+	}
     if (g_abKeyPressed[K_SPACE])
     {
         g_sChar.m_bActive = !g_sChar.m_bActive;
@@ -251,20 +269,59 @@ void renderGame()
 void renderMap()
 {
     // Set up sample colours, and output shadings
-    const WORD colors[] = {
+    /*const WORD colors[] = {
         0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
         0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-    };
+    };*/
 
-    COORD c;
-    for (int i = 0; i < 12; ++i)
-    {
-        c.X = 5 * i;
-        c.Y = i + 1;
-        colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }
+	COORD c = g_Console.getConsoleSize();
+
+	int height = 0;
+	int width = 0;
+
+
+	ifstream file("map1.txt");
+	if (file.is_open())
+	{
+		while (height < 19)
+		{
+			while (width < 77)
+			{
+				file >> maze[width][height];
+				width++;
+			}
+			width = 0;
+			height++;
+		}
+		for (int i = 0; i < 19; i++)
+		{
+			c.Y = i;
+			for (int j = 0; j < 77; j++)
+			{
+				if (maze[j][i] == '0')
+				{
+					maze[j][i] = ' ';
+				}
+				if (maze[j][i] == 'E')
+				{
+					maze[j][i] = ' ';
+				}
+				//if (maze[j][i] == '|')
+				//{
+				//	maze[j][i] = '#';
+				//}
+				c.X = j;
+				g_Console.writeToBuffer(c, maze[j][i]);
+			}
+		}
+		file.close();
+	}
 }
+
+//void renderMAP2()
+//{
+
+//}
 
 void renderCharacter()
 {
