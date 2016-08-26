@@ -43,6 +43,7 @@ enum EMAPS
 	Map4,
 	Map5
 };
+extern EMAPS currentMap;
 
 // Enumeration for the different screen states
 enum EGAMESTATES
